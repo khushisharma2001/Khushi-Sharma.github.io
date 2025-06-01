@@ -1,43 +1,4 @@
-<script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -48,22 +9,25 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <style>
     body { scroll-behavior: smooth; font-family: 'Poppins', sans-serif; }
-    .name-title { color: #4F46E5; font-weight: 800; letter-spacing: 1px; }
-    .section-title { color: #1E40AF; }
-    .hover-scale { transition: transform 0.3s ease, box-shadow 0.3s ease; }
-    .hover-scale:hover { transform: translateY(-5px); box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15); }
-    .bg-gradient-section { background: linear-gradient(135deg, #F9FAFB 0%, #E5E7EB 100%); }
-    .nav-link { transition: color 0.3s ease; }
-    .nav-link:hover { color: #A5B4FC; }
-    .card-border { border: 1px solid transparent; border-image: linear-gradient(to right, #4F46E5, #A5B4FC) 1; }
-    .button-gradient { background: linear-gradient(135deg, #4F46E5 0%, #6366F1 100%); }
-    .button-gradient:hover { background: linear-gradient(135deg, #4338CA 0%, #4F46E5 100%); }
-    .section-divider { border-top: 2px solid #E5E7EB; margin: 2rem 0; }
+    .name-title { color: #10B981; font-weight: 800; letter-spacing: 1px; }
+    .section-title { color: #0F766E; }
+    .hover-scale { transition: transform 0.4s ease-in-out, box-shadow 0.4s ease-in-out; }
+    .hover-scale:hover { transform: translateY(-6px); box-shadow: 0 16px 24px rgba(0, 0, 0, 0.2); }
+    .bg-gradient-section { background: linear-gradient(135deg, #FEFCE8 0%, #F5F5F4 100%); }
+    .nav-link { transition: color 0.3s ease-in-out; }
+    .nav-link:hover { color: #6EE7B7; }
+    .card-border { border: 1px solid transparent; border-image: linear-gradient(to right, #10B981, #6EE7B7) 1; }
+    .button-gradient { background: linear-gradient(135deg, #10B981 0%, #34D399 100%); }
+    .button-gradient:hover { background: linear-gradient(135deg, #059669 0%, #10B981 100%); }
+    .section-divider { border-top: 2px solid transparent; border-image: linear-gradient(to right, #10B981, #6EE7B7) 1; margin: 2rem 0; }
+    .fade-in { animation: fadeIn 1s ease-in; }
+    @keyframes fadeIn { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+    nav { border-radius: 0 0 8px 8px; }
   </style>
 </head>
 <body class="bg-gray-50">
   <!-- Header -->
-  <nav class="bg-indigo-900 text-white p-6 sticky top-0 z-10 shadow-lg">
+  <nav class="bg-emerald-900 text-white p-6 sticky top-0 z-10 shadow-lg">
     <div class="container mx-auto flex justify-end items-center">
       <div class="flex space-x-6">
         <a href="#about" class="nav-link text-lg font-medium">About</a>
@@ -78,9 +42,9 @@
   </nav>
 
   <!-- About Section -->
-  <section id="about" class="py-20 px-4 bg-gradient-section">
+  <section id="about" class="py-24 px-4 bg-gradient-section fade-in">
     <div class="container mx-auto max-w-4xl text-center">
-      <h1 class="name-title text-5xl font-extrabold mb-6">Khushi Sharma</h1>
+      <h1 class="name-title text-7xl font-extrabold mb-6">Khushi Sharma</h1>
       <h2 class="section-title text-4xl font-bold mb-8">About Me</h2>
       <p class="text-lg text-gray-800 mb-6 max-w-2xl mx-auto">
         Passionate computer science engineer specializing in Large Language Models (LLMs), machine learning, and artificial intelligence research. Focused on designing innovative solutions through advanced algorithms and data-driven insights.
@@ -90,18 +54,18 @@
           <strong>Contact:</strong> +3530899459200 | 20khushisharma01@gmail.com | Ireland
         </p>
         <div class="flex space-x-6">
-          <a href="https://www.linkedin.com/in/khushi-sharma" class="text-indigo-600 hover:text-indigo-800 transition">
+          <a href="https://www.linkedin.com/in/khushi-sharma" class="text-emerald-600 hover:text-emerald-800 transition">
             <i class="fab fa-linkedin fa-lg"></i> LinkedIn
           </a>
-          <a href="https://github.com/khushi-sharma" class="text-indigo-600 hover:text-indigo-800 transition">
+          <a href="https://github.com/khushisharma2001" class="text-emerald-600 hover:text-emerald-800 transition">
             <i class="fab fa-github fa-lg"></i> GitHub
           </a>
         </div>
         <div class="flex space-x-4">
-          <a href="https://drive.google.com/drive/folders/1yzffPL4DfyNZGEl7qYwZn8_fV4sehs6b?usp=sharing" download class="button-gradient text-white px-6 py-3 rounded-full transition flex items-center">
+          <a href="https://drive.google.com/uc?export=download&id=FILE_ID" download class="button-gradient text-white px-6 py-3 rounded-full transition flex items-center">
             <i class="fas fa-download mr-2"></i> Download Resume
           </a>
-          <a href="https://drive.google.com/drive/folders/1yzffPL4DfyNZGEl7qYwZn8_fV4sehs6b?usp=sharing" target="_blank" class="bg-gray-700 text-white px-6 py-3 rounded-full hover:bg-gray-800 transition flex items-center">
+          <a href="https://drive.google.com/file/d/FILE_ID/view?usp=sharing" target="_blank" class="bg-gray-700 text-white px-6 py-3 rounded-full hover:bg-gray-800 transition flex items-center">
             <i class="fas fa-eye mr-2"></i> Preview Resume
           </a>
         </div>
@@ -111,7 +75,7 @@
   </section>
 
   <!-- Experience Section -->
-  <section id="experience" class="py-20 px-4 bg-white">
+  <section id="experience" class="py-24 px-4 bg-white fade-in">
     <div class="container mx-auto max-w-4xl">
       <h2 class="section-title text-4xl font-bold mb-10 text-center">Work Experience</h2>
       <div class="space-y-8">
@@ -140,7 +104,7 @@
   </section>
 
   <!-- Education Section -->
-  <section id="education" class="py-20 px-4 bg-gradient-section">
+  <section id="education" class="py-24 px-4 bg-gradient-section fade-in">
     <div class="container mx-auto max-w-4xl">
       <h2 class="section-title text-4xl font-bold mb-10 text-center">Education</h2>
       <div class="space-y-8">
@@ -169,7 +133,7 @@
   </section>
 
   <!-- Projects Section -->
-  <section id="projects" class="py-20 px-4 bg-white">
+  <section id="projects" class="py-24 px-4 bg-white fade-in">
     <div class="container mx-auto max-w-4xl">
       <h2 class="section-title text-4xl font-bold mb-10 text-center">Projects</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -196,7 +160,7 @@
   </section>
 
   <!-- Skills Section -->
-  <section id="skills" class="py-20 px-4 bg-gradient-section">
+  <section id="skills" class="py-24 px-4 bg-gradient-section fade-in">
     <div class="container mx-auto max-w-4xl">
       <h2 class="section-title text-4xl font-bold mb-10 text-center">Skills</h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -232,7 +196,6 @@
             <li>Leadership</li>
             <li>Teamwork</li>
             <li>Analytical Thinking</li>
- Prospects</li>
             <li>Decision-Making</li>
             <li>Problem-Solving</li>
             <li>English: Fluent</li>
@@ -245,7 +208,7 @@
   </section>
 
   <!-- Publications Section -->
-  <section id="publications" class="py-20 px-4 bg-white">
+  <section id="publications" class="py-24 px-4 bg-white fade-in">
     <div class="container mx-auto max-w-4xl">
       <h2 class="section-title text-4xl font-bold mb-10 text-center">Publications</h2>
       <div class="bg-gray-50 p-6 rounded-xl shadow-md hover-scale card-border">
@@ -257,7 +220,7 @@
   </section>
 
   <!-- References Section -->
-  <section id="references" class="py-20 px-4 bg-gradient-section">
+  <section id="references" class="py-24 px-4 bg-gradient-section fade-in">
     <div class="container mx-auto max-w-4xl">
       <h2 class="section-title text-4xl font-bold mb-10 text-center">References</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -287,7 +250,7 @@
   </section>
 
   <!-- Footer -->
-  <footer class="bg-indigo-900 text-white text-center p-6">
+  <footer class="bg-emerald-900 text-white text-center p-6 fade-in">
     <p>© 2025 Khushi Sharma. All rights reserved.</p>
   </footer>
 </body>
