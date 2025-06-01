@@ -1,0 +1,294 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Khushi Sharma - Portfolio</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <style>
+    body { scroll-behavior: smooth; font-family: 'Poppins', sans-serif; }
+    .name-title { color: #4F46E5; font-weight: 800; letter-spacing: 1px; }
+    .section-title { color: #1E40AF; }
+    .hover-scale { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+    .hover-scale:hover { transform: translateY(-5px); box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15); }
+    .bg-gradient-section { background: linear-gradient(135deg, #F9FAFB 0%, #E5E7EB 100%); }
+    .nav-link { transition: color 0.3s ease; }
+    .nav-link:hover { color: #A5B4FC; }
+    .card-border { border: 1px solid transparent; border-image: linear-gradient(to right, #4F46E5, #A5B4FC) 1; }
+    .button-gradient { background: linear-gradient(135deg, #4F46E5 0%, #6366F1 100%); }
+    .button-gradient:hover { background: linear-gradient(135deg, #4338CA 0%, #4F46E5 100%); }
+    .section-divider { border-top: 2px solid #E5E7EB; margin: 2rem 0; }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <!-- Header -->
+  <nav class="bg-indigo-900 text-white p-6 sticky top-0 z-10 shadow-lg">
+    <div class="container mx-auto flex justify-end items-center">
+      <div class="flex space-x-6">
+        <a href="#about" class="nav-link text-lg font-medium">About</a>
+        <a href="#experience" class="nav-link text-lg font-medium">Experience</a>
+        <a href="#education" class="nav-link text-lg font-medium">Education</a>
+        <a href="#projects" class="nav-link text-lg font-medium">Projects</a>
+        <a href="#skills" class="nav-link text-lg font-medium">Skills</a>
+        <a href="#publications" class="nav-link text-lg font-medium">Publications</a>
+        <a href="#references" class="nav-link text-lg font-medium">References</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- About Section -->
+  <section id="about" class="py-20 px-4 bg-gradient-section">
+    <div class="container mx-auto max-w-4xl text-center">
+      <h1 class="name-title text-5xl font-extrabold mb-6">Khushi Sharma</h1>
+      <h2 class="section-title text-4xl font-bold mb-8">About Me</h2>
+      <p class="text-lg text-gray-800 mb-6 max-w-2xl mx-auto">
+        Passionate computer science engineer specializing in Large Language Models (LLMs), machine learning, and artificial intelligence research. Focused on designing innovative solutions through advanced algorithms and data-driven insights.
+      </p>
+      <div class="flex flex-col items-center space-y-6">
+        <p class="text-gray-600">
+          <strong>Contact:</strong> +3530899459200 | 20khushisharma01@gmail.com | Ireland
+        </p>
+        <div class="flex space-x-6">
+          <a href="https://www.linkedin.com/in/khushi-sharma" class="text-indigo-600 hover:text-indigo-800 transition">
+            <i class="fab fa-linkedin fa-lg"></i> LinkedIn
+          </a>
+          <a href="https://github.com/khushi-sharma" class="text-indigo-600 hover:text-indigo-800 transition">
+            <i class="fab fa-github fa-lg"></i> GitHub
+          </a>
+        </div>
+        <div class="flex space-x-4">
+          <a href="/Khushi_Sharma_Resume.pdf" download class="button-gradient text-white px-6 py-3 rounded-full transition flex items-center">
+            <i class="fas fa-download mr-2"></i> Download Resume
+          </a>
+          <a href="/Khushi_Sharma_Resume.pdf" target="_blank" class="bg-gray-700 text-white px-6 py-3 rounded-full hover:bg-gray-800 transition flex items-center">
+            <i class="fas fa-eye mr-2"></i> Preview Resume
+          </a>
+        </div>
+      </div>
+      <div class="section-divider"></div>
+    </div>
+  </section>
+
+  <!-- Experience Section -->
+  <section id="experience" class="py-20 px-4 bg-white">
+    <div class="container mx-auto max-w-4xl">
+      <h2 class="section-title text-4xl font-bold mb-10 text-center">Work Experience</h2>
+      <div class="space-y-8">
+        <div class="bg-gray-50 p-8 rounded-xl shadow-md hover-scale card-border">
+          <h3 class="text-2xl font-semibold text-gray-800">Artificial Intelligence Engineer</h3>
+          <p class="text-gray-600">Open Health Systems Laboratory (OHSL), United States | May 2022 - Jun 2024</p>
+          <ul class="list-disc list-inside mt-4 text-gray-700 space-y-2">
+            <li>Developed and fine-tuned AI models.</li>
+            <li>Optimized pre-trained models for text generation, summarization, and sentiment analysis.</li>
+            <li>Integrated AI-driven solutions into research projects, enhancing accuracy and efficiency.</li>
+            <li>Collaborated with cross-functional teams to deploy AI models for real-world healthcare solutions.</li>
+            <li>Conducted research and presented findings to technical and non-technical stakeholders.</li>
+          </ul>
+        </div>
+        <div class="bg-gray-50 p-8 rounded-xl shadow-md hover-scale card-border">
+          <h3 class="text-2xl font-semibold text-gray-800">Cyber Security Intern</h3>
+          <p class="text-gray-600">IFSO/CCU Delhi Police Cyber Crime Cell, Central Govt. of India, New Delhi, India | Jan 2023 - Jul 2023</p>
+          <ul class="list-disc list-inside mt-4 text-gray-700 space-y-2">
+            <li>Studied and applied cybersecurity principles, focusing on strategies to safeguard sensitive information and maintain data integrity.</li>
+            <li>Worked under professionals to gain deeper insights into cybersecurity concepts and their importance.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="section-divider"></div>
+    </div>
+  </section>
+
+  <!-- Education Section -->
+  <section id="education" class="py-20 px-4 bg-gradient-section">
+    <div class="container mx-auto max-w-4xl">
+      <h2 class="section-title text-4xl font-bold mb-10 text-center">Education</h2>
+      <div class="space-y-8">
+        <div class="bg-white p-8 rounded-xl shadow-md hover-scale card-border">
+          <h3 class="text-2xl font-semibold text-gray-800">Masters in Software Design in AI</h3>
+          <p class="text-gray-600">Technological University of the Shannon (TUS), Ireland | Sep 2024 - Present</p>
+          <ul class="list-disc list-inside mt-4 text-gray-700 space-y-2">
+            <li>Specialization in Artificial Intelligence, focusing on AI Research, LLM applications, and Generative AI techniques.</li>
+            <li>Coursework includes Natural Language Processing (NLP), AI Ethics, and Machine Learning.</li>
+            <li>Engaged in research projects related to machine learning and real-world problem-solving.</li>
+          </ul>
+        </div>
+        <div class="bg-white p-8 rounded-xl shadow-md hover-scale card-border">
+          <h3 class="text-2xl font-semibold text-gray-800">Bachelors in Computer Science Engineering</h3>
+          <p class="text-gray-600">Amity University, India | Sep 2020 - Jun 2024</p>
+          <ul class="list-disc list-inside mt-4 text-gray-700 space-y-2">
+            <li>Focused on Data Structures, Core Computer Science Concepts, and the Fundamentals of AI & ML Research.</li>
+            <li>Coursework included Algorithms, Operating Systems, Machine Learning, and Python.</li>
+            <li>Developed foundational expertise in AI/ML applications, including predictive modeling and data-driven decision-making.</li>
+            <li>Research: Published a Scopus-indexed paper on "Heart Disease Prediction Using Machine Learning Algorithms."</li>
+          </ul>
+        </div>
+      </div>
+      <div class="section-divider"></div>
+    </div>
+  </section>
+
+  <!-- Projects Section -->
+  <section id="projects" class="py-20 px-4 bg-white">
+    <div class="container mx-auto max-w-4xl">
+      <h2 class="section-title text-4xl font-bold mb-10 text-center">Projects</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-gray-50 p-6 rounded-xl shadow-md hover-scale card-border">
+          <h3 class="text-xl font-semibold text-gray-800">Interactive Search Engine Using RAG and LLMs</h3>
+          <p class="mt-2 text-gray-700">Retrieves and processes documents from web URLs using LangChain, Hugging Face Embeddings, and ChromaDB for efficient text processing.</p>
+          <p class="mt-2 text-gray-600"><strong>Technologies:</strong> LangChain</p>
+        </div>
+        <div class="bg-gray-50 p-6 rounded-xl shadow-md hover-scale card-border">
+          <h3 class="text-xl font-semibold text-gray-800">Website Chatbot</h3>
+          <p class="mt-2 text-gray-700">Designed a chatbot for real-time information retrieval and query resolution, implementing NLP techniques to improve response accuracy and user experience.</p>
+        </div>
+        <div class="bg-gray-50 p-6 rounded-xl shadow-md hover-scale card-border">
+          <h3 class="text-xl font-semibold text-gray-800">Document Processing Question Answering System</h3>
+          <p class="mt-2 text-gray-700">Built an AI-powered system to summarize large documents into concise insights, reducing summary generation time by 30%.</p>
+        </div>
+        <div class="bg-gray-50 p-6 rounded-xl shadow-md hover-scale card-border">
+          <h3 class="text-xl font-semibold text-gray-800">Heart Disease Prediction System Using ML Algorithms</h3>
+          <p class="mt-2 text-gray-700">Developed a predictive model using Random Forest and SVM, achieving 85% accuracy, trained on real-world datasets to assess heart disease risks.</p>
+        </div>
+      </div>
+      <div class="section-divider"></div>
+    </div>
+  </section>
+
+  <!-- Skills Section -->
+  <section id="skills" class="py-20 px-4 bg-gradient-section">
+    <div class="container mx-auto max-w-4xl">
+      <h2 class="section-title text-4xl font-bold mb-10 text-center">Skills</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-white p-6 rounded-xl shadow-md hover-scale card-border">
+          <h3 class="text-xl font-semibold text-gray-800">Technical Skills</h3>
+          <ul class="list-disc list-inside mt-4 text-gray-700 space-y-2">
+            <li>Python</li>
+            <li>NLP</li>
+            <li>Machine Learning</li>
+            <li>AI Model Fine-Tuning</li>
+            <li>TensorFlow</li>
+            <li>PyTorch</li>
+            <li>Google Workspace</li>
+            <li>LangChain</li>
+            <li>OpenAI API</li>
+            <li>GPT-based models</li>
+            <li>Fine-Tuning LLMs</li>
+            <li>Prompt Engineering</li>
+          </ul>
+        </div>
+        <div class="bg-white p-6 rounded-xl shadow-md hover-scale card-border">
+          <h3 class="text-xl font-semibold text-gray-800">Research Skills</h3>
+          <ul class="list-disc list-inside mt-4 text-gray-700 space-y-2">
+            <li>AI & ML Research</li>
+            <li>Academic Paper Writing</li>
+            <li>Scientific Analysis</li>
+            <li>Biomedical Research</li>
+          </ul>
+        </div>
+        <div class="bg-white p-6 rounded-xl shadow-md hover-scale card-border">
+          <h3 class="text-xl font-semibold text-gray-800">Soft Skills & Languages</h3>
+          <ul class="list-disc list-inside mt-4 text-gray-700 space-y-2">
+            <li>Leadership</li>
+            <li>Teamwork</li>
+            <li>Analytical Thinking</li>
+ Prospects</li>
+            <li>Decision-Making</li>
+            <li>Problem-Solving</li>
+            <li>English: Fluent</li>
+            <li>Hindi: Native</li>
+          </ul>
+        </div>
+      </div>
+      <div class="section-divider"></div>
+    </div>
+  </section>
+
+  <!-- Publications Section -->
+  <section id="publications" class="py-20 px-4 bg-white">
+    <div class="container mx-auto max-w-4xl">
+      <h2 class="section-title text-4xl font-bold mb-10 text-center">Publications</h2>
+      <div class="bg-gray-50 p-6 rounded-xl shadow-md hover-scale card-border">
+        <h3 class="text-xl font-semibold text-gray-800">Heart Disease Prediction System Using Machine Learning Algorithms</h3>
+        <p class="text-gray-600 mt-2">International Conference On Networks, Intelligence & Computing (ICONIC-2023) | Nov 2023</p>
+      </div>
+      <div class="section-divider"></div>
+    </div>
+  </section>
+
+  <!-- References Section -->
+  <section id="references" class="py-20 px-4 bg-gradient-section">
+    <div class="container mx-auto max-w-4xl">
+      <h2 class="section-title text-4xl font-bold mb-10 text-center">References</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-white p-6 rounded-xl shadow-md hover-scale card-border">
+          <p class="text-gray-800"><strong>Dr. Paul Jacob</strong>, Lecturer, Technological University of the Shannon, Ireland</p>
+          <p class="text-gray-600">Email: paul.jacob@tus.ie</p>
+        </div>
+        <div class="bg-white p-6 rounded-xl shadow-md hover-scale card-border">
+          <p class="text-gray-800"><strong>Dr. Cormac MacGiollaEain</strong>, Lecturer, Technological University of the Shannon, Ireland</p>
+          <p class="text-gray-600">Email: cormac.macgiollaeain@tus.ie</p>
+        </div>
+        <div class="bg-white p-6 rounded-xl shadow-md hover-scale card-border">
+          <p class="text-gray-800"><strong>Dr. Gerry Hanley</strong>, Executive Director, MERLOT & SkillsCommons, CSULB, USA</p>
+          <p class="text-gray-600">Email: Gerry.Hanley@csulb.edu | Phone: +1 562 335-3347</p>
+        </div>
+        <div class="bg-white p-6 rounded-xl shadow-md hover-scale card-border">
+          <p class="text-gray-800"><strong>Anil Srivastava</strong>, CEO, Open Health Systems Laboratory, USA</p>
+          <p class="text-gray-600">Email: anil.srivastava@ohsl.us | Phone: +1 2404633686</p>
+        </div>
+        <div class="bg-white p-6 rounded-xl shadow-md hover-scale card-border">
+          <p class="text-gray-800"><strong>Dr. Anandan Natarajan</strong>, Consultant Respiratory & General Physician, Mater Misericordiae University Hospital, Ireland</p>
+          <p class="text-gray-600">Email: anandannatarajan@mater.ie | Phone: 0872141853</p>
+        </div>
+      </div>
+      <div class="section-divider"></div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-indigo-900 text-white text-center p-6">
+    <p>© 2025 Khushi Sharma. All rights reserved.</p>
+  </footer>
+</body>
+</html>
